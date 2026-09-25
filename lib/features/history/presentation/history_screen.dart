@@ -111,6 +111,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             )
           : ListView.separated(
               padding: const EdgeInsets.all(16.0),
+              cacheExtent: 400,
               itemCount: _history.length,
               separatorBuilder: (_, __) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
@@ -118,48 +119,49 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 final dateStr = DateFormat('MMM d, y • h:mm a')
                     .format(job.createdAt);
 
-                return Dismissible(
-                  key: Key(job.id),
-                  direction: DismissDirection.endToStart,
-                  background: Container(
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.only(right: 20),
-                    decoration: BoxDecoration(
-                      color: AppTheme.accentRose,
-                      borderRadius: BorderRadius.circular(
-                        AppTheme.radiusMedium,
-                      ),
-                    ),
-                    child: const Icon(
-                      Icons.delete_outline,
-                      color: Colors.white,
-                    ),
-                  ),
-                  onDismissed: (_) => _deleteItem(job.id),
-                  child: InkWell(
-                    onTap: () {
-                      if (job.status == JobStatus.succeeded) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (ctx) => ResultScreen(
-                              job: job,
-                              repository: widget.repository,
-                            ),
-                          ),
-                        ).then((_) => _loadHistory());
-                      }
-                    },
-                    borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
+                return RepaintBoundary(
+                  child: Dismissible(
+                    key: Key(job.id),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 20),
                       decoration: BoxDecoration(
-                        color: AppTheme.darkSurface,
+                        color: AppTheme.accentRose,
                         borderRadius: BorderRadius.circular(
                           AppTheme.radiusMedium,
                         ),
-                        border: Border.all(color: AppTheme.darkBorder),
                       ),
+                      child: const Icon(
+                        Icons.delete_outline,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onDismissed: (_) => _deleteItem(job.id),
+                    child: InkWell(
+                      onTap: () {
+                        if (job.status == JobStatus.succeeded) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (ctx) => ResultScreen(
+                                job: job,
+                                repository: widget.repository,
+                              ),
+                            ),
+                          ).then((_) => _loadHistory());
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppTheme.darkSurface,
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.radiusMedium,
+                          ),
+                          border: Border.all(color: AppTheme.darkBorder),
+                        ),
                       child: Row(
                         children: [
                           ClipRRect(
@@ -230,8 +232,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       ),
                     ),
                   ),
-                );
-              },
+                ),
+              );
+            },
             ),
     );
   }

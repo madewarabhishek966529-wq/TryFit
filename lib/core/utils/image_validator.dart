@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 
 import '../constants/app_constants.dart';
 
@@ -25,6 +25,12 @@ class ValidationResult {
 /// rather than relying solely on file extensions or untrusted headers.
 class ImageValidator {
   ImageValidator._();
+
+  /// Validates raw byte content asynchronously in a background isolate
+  /// to preserve 120 FPS UI smoothness.
+  static Future<ValidationResult> validateImageBytesAsync(Uint8List bytes) {
+    return compute(validateImageBytes, bytes);
+  }
 
   /// Validates raw byte content for size, non-emptiness, and valid binary signatures.
   static ValidationResult validateImageBytes(Uint8List bytes) {

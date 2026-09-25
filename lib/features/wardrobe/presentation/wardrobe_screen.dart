@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/models/garment_category.dart';
+import '../../../core/services/local_storage_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/empty_state_view.dart';
 import '../../try_on/data/mock_data_fixtures.dart';
@@ -35,6 +36,24 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
         dateAdded: DateTime.now().subtract(const Duration(days: 3)),
       );
     }).toList();
+
+    _loadPersistedWardrobe();
+  }
+
+  Future<void> _loadPersistedWardrobe() async {
+    try {
+      final storage = await LocalStorageService.getInstance();
+      final persisted = storage.loadWardrobe();
+      if (persisted.isNotEmpty && mounted) {
+        setState(() => _items = persisted);
+      }
+    } catch (_) {}
+  }
+
+  void _persistWardrobe() {
+    LocalStorageService.getInstance().then((storage) {
+      storage.saveWardrobe(_items);
+    }).catchError((_) {});
   }
 
   void _showAddItemDialog() {
@@ -126,6 +145,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                         ),
                       );
                     });
+                    _persistWardrobe();
                     Navigator.pop(ctx);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -219,6 +239,7 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                     )
                   : GridView.builder(
                       padding: const EdgeInsets.all(16),
+                      cacheExtent: 600,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
@@ -229,60 +250,62 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                       itemCount: filteredItems.length,
                       itemBuilder: (context, index) {
                         final item = filteredItems[index];
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: AppTheme.darkSurface,
-                            borderRadius: BorderRadius.circular(
-                              AppTheme.radiusMedium,
+                        return RepaintBoundary(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppTheme.darkSurface,
+                              borderRadius: BorderRadius.circular(
+                                AppTheme.radiusMedium,
+                              ),
+                              border: Border.all(color: AppTheme.darkBorder),
                             ),
-                            border: Border.all(color: AppTheme.darkBorder),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Expanded(
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(AppTheme.radiusMedium),
-                                  ),
-                                  child: Image.network(
-                                    item.imageUrl,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => const Center(
-                                      child: Icon(
-                                        Icons.checkroom,
-                                        color: Colors.grey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Expanded(
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(AppTheme.radiusMedium),
+                                    ),
+                                    child: Image.network(
+                                      item.imageUrl,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) => const Center(
+                                        child: Icon(
+                                          Icons.checkroom,
+                                          color: Colors.grey,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      item.title,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold,
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item.title,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      '${item.brand} • ${item.color}',
-                                      style: const TextStyle(
-                                        fontSize: 11,
-                                        color: Color(0xFF94A3B8),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        '${item.brand} • ${item.color}',
+                                        style: const TextStyle(
+                                          fontSize: 11,
+                                          color: Color(0xFF94A3B8),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         );
                       },

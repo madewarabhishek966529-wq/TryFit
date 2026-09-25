@@ -36,4 +36,20 @@ class WardrobeItem {
       'date_added': dateAdded.toIso8601String(),
     };
   }
+
+  factory WardrobeItem.fromJson(Map<String, dynamic> json) {
+    return WardrobeItem(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      brand: json['brand'] as String? ?? 'Custom',
+      category: GarmentCategory.fromId(json['category'] as String),
+      color: json['color'] as String? ?? 'Mixed',
+      season: json['season'] as String? ?? 'All Season',
+      imageUrl: json['image_url'] as String? ?? '',
+      tags: (json['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      dateAdded: json['date_added'] != null
+          ? DateTime.parse(json['date_added'] as String)
+          : DateTime.now(),
+    );
+  }
 }
