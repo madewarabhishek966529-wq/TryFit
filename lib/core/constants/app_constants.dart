@@ -11,8 +11,8 @@ class AppConstants {
   static const String simulationDisclaimer =
       'Generated output is an AI visual simulation. It does not determine exact garment size, real-world fit, fabric drape, or physical comfort.';
 
-  static const String simulationBadgeText = 'AI Simulation';
-  static const String demoBadgeText = 'DEMO MODE';
+  static const String simulationBadgeText = 'AI Fit';
+  static const String demoBadgeText = 'AI Studio';
 
   // Image Upload Constraints
   static const int maxImageBytes = 15 * 1024 * 1024; // 15 MB

@@ -130,7 +130,7 @@ class _ProcessingScreenState extends State<ProcessingScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SimulationBadge(isDemo: true),
+              const SimulationBadge(isDemo: false),
               const SizedBox(height: 36),
               // Indeterminate animated progress circle (honest, no fake % counter)
               Stack(

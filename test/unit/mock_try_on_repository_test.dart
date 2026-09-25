@@ -12,7 +12,7 @@ void main() {
       repository = MockTryOnRepository();
     });
 
-    test('creates job in queued status with demo flag', () async {
+    test('creates job in queued status for real-world simulation', () async {
       final personAsset = MockDataFixtures.sampleModels[0].toAsset();
       final garmentAsset = MockDataFixtures.sampleGarments[0].toAsset();
 
@@ -24,7 +24,7 @@ void main() {
 
       expect(job.id, isNotEmpty);
       expect(job.status, equals(JobStatus.queued));
-      expect(job.isDemo, isTrue);
+      expect(job.isDemo, isFalse);
       expect(job.category, equals(GarmentCategory.outerwear));
     });
 

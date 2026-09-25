@@ -140,9 +140,9 @@ class ImageIntakeCard extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: onUploadCustom,
-                          icon: const Icon(Icons.upload_file, size: 16),
+                          icon: const Icon(Icons.add_a_photo_outlined, size: 16),
                           label: const Text(
-                            'Upload / Test',
+                            'Camera / Upload',
                             style: TextStyle(fontSize: 12),
                           ),
                           style: ElevatedButton.styleFrom(

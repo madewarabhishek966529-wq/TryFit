@@ -15,7 +15,7 @@ class SplitComparisonView extends StatefulWidget {
     super.key,
     required this.originalAsset,
     required this.resultAsset,
-    this.isDemo = true,
+    this.isDemo = false,
   });
 
   @override

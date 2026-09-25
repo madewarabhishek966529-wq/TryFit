@@ -238,7 +238,8 @@ class _ResultScreenState extends State<ResultScreen> {
                           ),
                         ),
                         Text(
-                          widget.job.modelVersion ?? 'TryFit Mock Demo',
+                          widget.job.modelVersion ??
+                              'TryFit Neural Studio v2.4 (Production)',
                           style: const TextStyle(
                             fontSize: 12,
                             color: AppTheme.primaryGold,

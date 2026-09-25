@@ -36,9 +36,9 @@ class SimulationBadge extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              isDemo ? Icons.science_outlined : Icons.auto_awesome,
+              isDemo ? Icons.auto_awesome_outlined : Icons.auto_awesome,
               size: compact ? 12 : 14,
-              color: isDemo ? AppTheme.accentAmber : AppTheme.simulationColor,
+              color: isDemo ? AppTheme.accentEmerald : AppTheme.simulationColor,
             ),
             const SizedBox(width: 5),
             Text(

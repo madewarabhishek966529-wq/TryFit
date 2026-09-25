@@ -35,7 +35,7 @@ void main() {
       fabricScale: 1.05,
     );
 
-    expect(result.id, startsWith('res-offline-'));
+    expect(result.id, startsWith('res-real-'));
     expect(result.purpose, AssetPurpose.result);
     expect(result.bytes, isNotNull);
     expect(result.bytes!.length, greaterThan(10 * 1024));

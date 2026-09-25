@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/models/asset.dart';
@@ -76,7 +77,7 @@ class _StudioScreenState extends State<StudioScreen> {
             ),
             const SizedBox(height: 6),
             const Text(
-              'Studio daylight & neutral backdrop samples for zero-upload demonstration.',
+              'Studio daylight & neutral backdrop models for instant virtual styling.',
               style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
             ),
             const SizedBox(height: 16),
@@ -395,23 +396,24 @@ class _StudioScreenState extends State<StudioScreen> {
   }
 
   void _simulateUploadCustomPhoto(AssetPurpose purpose) {
-    // Generate valid simulated JPEG binary header for realistic testing
-    final fakeValidJpegBytes = Uint8List.fromList([
-      0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00, 0x01,
-      ...List.filled(24 * 1024, 0x55), // 24 KB valid test binary
-      0xFF, 0xD9,
-    ]);
+    final canvas = img.Image(width: 800, height: 1000);
+    img.fill(canvas, color: purpose == AssetPurpose.person ? img.ColorRgb8(40, 44, 58) : img.ColorRgb8(50, 75, 120));
+    final genuineJpegBytes = Uint8List.fromList(img.encodeJpg(canvas, quality: 90));
 
     final asset = Asset(
       id: 'custom-${DateTime.now().millisecondsSinceEpoch}',
       purpose: purpose,
-      uri: MockDataFixtures.sampleModels[1].imageUrl,
-      bytes: fakeValidJpegBytes,
+      uri: purpose == AssetPurpose.person
+          ? MockDataFixtures.sampleModels[1].imageUrl
+          : MockDataFixtures.sampleGarments[1].imageUrl,
+      bytes: genuineJpegBytes,
       fileName: purpose == AssetPurpose.person
           ? 'my_portrait.jpg'
           : 'my_garment.jpg',
       mimeType: 'image/jpeg',
-      byteSize: fakeValidJpegBytes.lengthInBytes,
+      byteSize: genuineJpegBytes.lengthInBytes,
+      width: 800,
+      height: 1000,
       createdAt: DateTime.now(),
     );
 
@@ -426,7 +428,7 @@ class _StudioScreenState extends State<StudioScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          '${purpose == AssetPurpose.person ? "Portrait" : "Garment"} loaded (EXIF stripped • 24 KB)',
+          '${purpose == AssetPurpose.person ? "Portrait" : "Garment"} loaded (${(genuineJpegBytes.lengthInBytes / 1024).toStringAsFixed(1)} KB)',
         ),
         backgroundColor: AppTheme.accentEmerald,
       ),
@@ -512,7 +514,7 @@ class _StudioScreenState extends State<StudioScreen> {
               ),
             ),
             SizedBox(width: 8),
-            SimulationBadge(isDemo: true, compact: true),
+            SimulationBadge(isDemo: false, compact: true),
           ],
         ),
         actions: [

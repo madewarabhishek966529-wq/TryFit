@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
 
 import '../../../core/models/asset.dart';
 import '../../../core/models/garment_category.dart';
@@ -100,11 +101,9 @@ class _LiveCameraStudioState extends State<LiveCameraStudio>
         personFileName = capturedXFile.name;
       } else {
         // Fallback realistic JPEG frame (offline mirror capture)
-        personBytes = Uint8List.fromList([
-          0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00, 0x01,
-          ...List.filled(28 * 1024, 0x5A), // 28 KB valid test binary
-          0xFF, 0xD9,
-        ]);
+        final fallbackCanvas = img.Image(width: 800, height: 1000);
+        img.fill(fallbackCanvas, color: img.ColorRgb8(30, 32, 44));
+        personBytes = Uint8List.fromList(img.encodeJpg(fallbackCanvas, quality: 90));
         personFileName = 'live_cam_capture_${DateTime.now().millisecondsSinceEpoch}.jpg';
       }
 
